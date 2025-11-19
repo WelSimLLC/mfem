@@ -19,14 +19,8 @@ CMakeFiles/
 # Clangd server cache
 *.cache*
 
-#vscode settings
-/.vscode/
-
 # Backup files
 *~
-
-# clangd index
-/.cache/
 
 # Default install location
 /mfem/

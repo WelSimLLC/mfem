@@ -157,4 +157,11 @@ constexpr real_t operator""_r(unsigned long long v)
 #endif
 #endif // MFEM_USE_MPI not defined
 
+
+#ifdef _WIN32
+#define PATHSEP "\\"
+#else
+#define PATHSEP "/"
+#endif
+
 #endif // MFEM_CONFIG_HPP

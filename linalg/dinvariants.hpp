@@ -13,6 +13,7 @@
 #define MFEM_DINVARIANTS_HPP
 
 #include "../config/config.hpp"
+#include "../general/cuda.hpp"
 #include "dtensor.hpp"
 #include <cmath>
 

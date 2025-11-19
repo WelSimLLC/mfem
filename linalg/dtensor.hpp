@@ -12,8 +12,8 @@
 #ifndef MFEM_DTENSOR
 #define MFEM_DTENSOR
 
-#include "../config/config.hpp"
-#include "../general/error.hpp"
+#include "../general/backends.hpp"
+#include <array>
 
 namespace mfem
 {
@@ -101,7 +101,7 @@ public:
       // Initialize sizes, and compute the number of values
       const long int nb = Init<1, Dim, Args...>::result(sizes, args...);
       capacity = nb;
-      data = (capacity > 0) ? data_ : nullptr;
+      data = (capacity > 0) ? data_ : NULL;
    }
 
    /// Copy constructor (default)
@@ -141,17 +141,17 @@ inline DeviceTensor<sizeof...(Dims),T> Reshape(T *ptr, Dims... dims)
 }
 
 
-using DeviceArray = DeviceTensor<1,int>;
-using ConstDeviceArray = DeviceTensor<1,const int>;
+typedef DeviceTensor<1,int> DeviceArray;
+typedef DeviceTensor<1,const int> ConstDeviceArray;
 
-using DeviceVector = DeviceTensor<1,real_t>;
-using ConstDeviceVector = DeviceTensor<1,const real_t>;
+typedef DeviceTensor<1,real_t> DeviceVector;
+typedef DeviceTensor<1,const real_t> ConstDeviceVector;
 
-using DeviceMatrix = DeviceTensor<2,real_t>;
-using ConstDeviceMatrix = DeviceTensor<2,const real_t>;
+typedef DeviceTensor<2,real_t> DeviceMatrix;
+typedef DeviceTensor<2,const real_t> ConstDeviceMatrix;
 
-using DeviceCube = DeviceTensor<3,real_t>;
-using ConstDeviceCube = DeviceTensor<3,const real_t>;
+typedef DeviceTensor<3,real_t> DeviceCube;
+typedef DeviceTensor<3,const real_t> ConstDeviceCube;
 
 } // mfem namespace
 

@@ -6436,7 +6436,7 @@ void ParMesh::PrintVTU(std::string pathname,
 
    if (MyRank == 0)
    {
-      std::string pvtu_name = pathname + "/" + fname + ".pvtu";
+      std::string pvtu_name = pathname + PATHSEP + fname + ".pvtu";
       std::ofstream os(pvtu_name);
 
       std::string data_type = (format == VTKFormat::BINARY32) ? "Float32" : "Float64";
@@ -6483,7 +6483,7 @@ void ParMesh::PrintVTU(std::string pathname,
       os.close();
    }
 
-   std::string vtu_fname = pathname + "/" + fname + ".proc"
+   std::string vtu_fname = pathname + PATHSEP + fname + ".proc"
                            + to_padded_string(MyRank, pad_digits_rank);
    Mesh::PrintVTU(vtu_fname, format, high_order_output, compression_level,
                   bdr_elements);

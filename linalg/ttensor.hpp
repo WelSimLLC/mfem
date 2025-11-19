@@ -15,6 +15,7 @@
 #include "../config/tconfig.hpp"
 #include "../linalg/simd.hpp"
 #include "../general/tassign.hpp"
+#include "../general/backends.hpp"
 #include "tlayout.hpp"
 #include "tmatrix.hpp"
 

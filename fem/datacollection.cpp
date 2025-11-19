@@ -20,6 +20,7 @@
 #include <cerrno>      // errno
 #include <sstream>
 #include <regex>
+#include <filesystem>
 
 #ifndef _WIN32
 #include <sys/stat.h>  // mkdir
@@ -267,7 +268,7 @@ const
    {
       dir_name += "_" + to_padded_string(cycle, pad_digits_cycle);
    }
-   std::string file_name = dir_name + "/" + field_name;
+   std::string file_name = dir_name + PATHSEP + field_name;
    if (appendRankToFileName)
    {
       file_name += "." + to_padded_string(myid, pad_digits_rank);
@@ -600,7 +601,7 @@ void VisItDataCollection::LoadMesh()
 void VisItDataCollection::LoadFields()
 {
    std::string path_left = prefix_path + name + "_" +
-                           to_padded_string(cycle, pad_digits_cycle) + "/";
+                           to_padded_string(cycle, pad_digits_cycle) + PATHSEP;
    std::string path_right = "." + to_padded_string(myid, pad_digits_rank);
 
    field_map.clear();
@@ -654,7 +655,7 @@ std::string VisItDataCollection::GetVisItRootString()
 {
    // Get the path string (relative to where the root file is, i.e. no prefix).
    std::string path_str =
-      name + "_" + to_padded_string(cycle, pad_digits_cycle) + "/";
+      name + "_" + to_padded_string(cycle, pad_digits_cycle) + PATHSEP;
 
    // We have to build the json tree inside out to get all the values in there
    picojson::object top, dsets, main, mesh, fields, field, mtags, ftags;
@@ -856,7 +857,7 @@ void ParaViewDataCollection::Save()
    std::string col_path = GenerateCollectionPath();
    // check if the directories are created
    {
-      std::string path = col_path + "/" + GenerateVTUPath();
+      std::string path = col_path + PATHSEP + GenerateVTUPath();
       int error_code = create_directory(path, mesh, myid);
       if (error_code)
       {
@@ -873,7 +874,9 @@ void ParaViewDataCollection::Save()
 
    if (myid == 0 && !pvd_stream.is_open())
    {
-      std::string pvdname = col_path + "/" + GeneratePVDFileName();
+      //std::string pvdname = col_path + PATHSEP + GeneratePVDFileName();
+      std::filesystem::path pathObj(GeneratePVDFileName());
+      std::string pvdname = col_path + PATHSEP + pathObj.filename().string();
 
       bool write_header = true;
       std::ifstream pvd_in;
@@ -937,7 +940,7 @@ void ParaViewDataCollection::Save()
       }
    }
 
-   std::string vtu_prefix = col_path + "/" + GenerateVTUPath() + "/";
+   std::string vtu_prefix = col_path + PATHSEP + GenerateVTUPath() + PATHSEP;
 
    // Save the local part of the mesh and grid functions fields to the local
    // VTU file. Also save coefficient fields.
@@ -1010,7 +1013,7 @@ void ParaViewDataCollection::Save()
       // Add the latest PVTU to the PVD
       pvd_stream << "<DataSet timestep=\"" << GetTime()
                  << "\" group=\"\" part=\"" << 0 << "\" file=\""
-                 << GeneratePVTUPath() + "/" + GeneratePVTUFileName("data")
+                 << GeneratePVTUPath() + PATHSEP + GeneratePVTUFileName("data")
                  << "\" name=\"mesh\"/>\n";
 
       // Create PVTU files for each quadrature field and add them to the PVD
@@ -1018,10 +1021,10 @@ void ParaViewDataCollection::Save()
       for (auto &q_field : q_field_map)
       {
          const std::string &q_field_name = q_field.first;
-         std::string q_fname = GeneratePVTUPath() + "/"
+         std::string q_fname = GeneratePVTUPath() + PATHSEP
                                + GeneratePVTUFileName(q_field_name);
 
-         std::ofstream pvtu_out(col_path + "/" + q_fname);
+         std::ofstream pvtu_out(col_path + PATHSEP + q_fname);
          WritePVTUHeader(pvtu_out);
          int vec_dim = q_field.second->GetVDim();
          pvtu_out << "<PPointData>\n";
